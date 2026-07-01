@@ -1,1 +1,1 @@
-REPLACE_WITH_ACTUAL
+Full .github/README from sandbox

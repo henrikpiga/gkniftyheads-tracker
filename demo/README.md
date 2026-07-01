@@ -1,1 +1,1 @@
-REPLACE_WITH_ACTUAL
+Full demo/README from sandbox
