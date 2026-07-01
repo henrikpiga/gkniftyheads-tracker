@@ -1,38 +1,66 @@
-# .github/
+# .github/ — GitHub Automation & Repository Health
 
-This folder contains GitHub-specific configuration for automation and repository health.
+This folder contains the configuration that makes the entire **GitOps Serverless Pipeline** work with zero ongoing cost or maintenance.
 
-## workflows/
+It is the "engine room" of the system: GitHub Actions provides free daily compute that keeps the data fresh, while everything stays versioned in Git and instantly available via CDN.
 
-Contains the production automation:
+## Folder Contents
 
-- `daily-sync.yml` — The heart of the GitOps pipeline.
+- `workflows/daily-sync.yml` — The production automation workflow (the heart of the zero-cost model).
+- `README.md` — This file. Educational guide to the automation layer.
 
-### What daily-sync.yml does
+## The Daily Sync Workflow (`daily-sync.yml`)
 
-1. Triggers on a schedule (default: once per day at 02:00 UTC) **or** manually via the Actions tab.
-2. Checks out the latest code.
-3. Installs dependencies (`npm install`).
-4. Runs the delta sync (once fully implemented) + rarity calculation.
-5. Commits any changed JSON files in `/data/` with a clean message.
-6. Pushes the updates back to the `main` branch.
+This is what turns the repository into a living, self-updating data platform.
 
-Because everything is committed to Git, the entire history of supply changes, rarity shifts, and leaderboard movements is preserved forever and visible to the community.
+### What it does every night (or on manual trigger)
 
-### How to enable
+1. Checks out the latest code from `main`.
+2. Runs `npm install` (lightweight — scripts have almost no dependencies).
+3. Executes the delta sync (new mints + burns since last run).
+4. Runs the rarity calculation engine (weighted scores, surviving mint ranks, trait exposure, leaderboards).
+5. Commits any changed JSON files in `/data/` with a clean, descriptive message.
+6. Pushes the updates back to `main`.
 
-1. Go to the **Actions** tab of the repository.
-2. Click on the `daily-sync` workflow.
-3. Click **"Enable workflow"** (or run it manually first to test).
+Because the workflow commits directly to the repository, the entire history of supply changes, rarity shifts, mint rank movements, and leaderboard updates is permanently preserved and visible to the whole WAXFAMs community.
 
-You can also edit the cron schedule directly in the YAML file if you want more or less frequent updates.
+### How to enable it
 
-### Security note
+1. Go to the **Actions** tab on the repository page.
+2. Find the `daily-sync` workflow.
+3. Click **"Enable workflow"**.
+4. (Optional but recommended) Run it manually once to verify everything works with your current data.
 
-The workflow uses the default `GITHUB_TOKEN` which has permission to push to the repository. No secrets are required for the basic pipeline.
+You can also edit the cron schedule directly in the YAML file if you want updates more or less frequently than once per day.
+
+### Security & Permissions
+
+The workflow uses GitHub's default `GITHUB_TOKEN`. It has permission to push to the repository. **No repository secrets are required** for the basic pipeline. This keeps setup simple and secure.
+
+## Why This Architecture Is Powerful
+
+- **Zero server cost** — GitHub Actions free tier easily handles even 500k+ asset collections.
+- **Fully transparent & auditable** — Every change is a Git commit. Anyone can see exactly when data was updated and what changed.
+- **Instant CDN delivery** — All generated JSONs are served worldwide via jsDelivr or GitHub Pages with no extra hosting.
+- **Easy to extend** — Add more collections, change weights, or migrate to a full backend later (see root README migration section).
+
+## Customization
+
+- Change the schedule by editing the `cron` line in `daily-sync.yml`.
+- Add more jobs (e.g., weekly full re-calculation, Discord notifications) by adding new workflow files.
+- The workflow is intentionally simple so the WAXFAMs team or AI developers can understand and modify it quickly.
+
+## Relation to the Rest of the Repo
+
+- Root `README.md` — Big-picture handbook, requirements mapping, formulas, WAX best practices, and the complete file-by-file architecture guide.
+- `scripts/` — The actual logic the workflow calls.
+- `data/` — Where the workflow writes its results.
+- `demo/` — The beautiful public dashboard that reads the data the workflow keeps fresh.
+
+See the root `README.md` for the full educational overview and the `scripts/README.md` for details on what each script does.
 
 ---
 
-This automation is what makes the whole system **zero-maintenance** after the initial setup.
+**This automation layer is what makes the whole GK Nifty Heads tracker long-term sustainable and community-friendly.**
 
-*Part of gkniftyheads-tracker v0.2*
+*Part of gkniftyheads-tracker — built for the WAXFAMs & GK Nifty Heads community.*
