@@ -8,385 +8,248 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-        :root {
-            --primary: #6366f1;
-        }
-        body {
-            font-family: 'Inter', system_ui, sans-serif;
-        }
-        .font-display {
-            font-family: 'Space Grotesk', 'Inter', sans-serif;
-            font-weight: 600;
-        }
-        .glass {
-            background: rgba(255,255,255, 0.08);
-            backdrop-filter: blur(16px);
-        }
-        .section-header {
-            font-size: 1.1rem;
-            letter-spacing: -.025em;
-        }
-        .nft-card {
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
-        }
-        .nft-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; }
+        .glass { background: rgba(255,255,255, 0.08); backdrop-filter: blur(16px); }
+        .metric { font-size: 1.75rem; line-height: 1; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .nft-card { transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s; }
+        .nft-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
         .rarity-legendary { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
         .rarity-epic { background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; }
         .rarity-rare { background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; }
         .rarity-uncommon { background: linear-gradient(135deg, #22c55e, #15803d); color: white; }
         .rarity-common { background: #64748b; color: white; }
-        .stat-value {
-            font-variant-numeric: tabular-nums;
-        }
-        .leaderboard-row {
-            transition: background-color 0.1s;
-        }
-        .leaderboard-row:hover {
-            background-color: rgba(99, 102, 241, 0.08);
-        }
-        .trait-pill {
-            font-size: 0.75rem;
-            padding: 1px 9px;
-            border-radius: 9999px;
-            background: rgba(255,255,255,0.1);
-        }
-        .metric {
-            font-size: 1.75rem;
-            line-height: 1;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
-        }
+        .trait-pill { font-size: 0.75rem; padding: 1px 9px; border-radius: 9999px; background: rgba(255,255,255,0.1); }
+        .exposure-bar { height: 6px; background: linear-gradient(to right, #6366f1, #a855f7); border-radius: 9999px; }
     </style>
 </head>
 <body class="bg-zinc-950 text-zinc-200">
-    <!-- Top Navigation -->
     <nav class="border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-lg sticky top-0 z-50">
-        <div class="max-w-screen-2xl mx-auto">
-            <div class="px-8 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 flex items-center justify-center">
-                        <i class="fa-solid fa-head-side-mask text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <div class="font-display text-2xl tracking-tighter font-semibold">GK Nifty Heads</div>
-                        <div class="text-[10px] text-zinc-500 -mt-1">TRACKER v0.9 • DEMO</div>
+        <div class="max-w-screen-2xl mx-auto px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 flex items-center justify-center">
+                    <i class="fa-solid fa-head-side-mask text-white text-2xl"></i>
+                </div>
+                <div>
+                    <div class="font-display text-2xl tracking-tighter font-semibold">GK Nifty Heads</div>
+                    <div class="text-[10px] text-zinc-500 -mt-1">TRACKER v0.95 • WEIGHTED RARITY + SURVIVING RANKS</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-x-4">
+                <div class="hidden md:flex items-center gap-x-2 text-sm">
+                    <div class="px-3 py-1.5 rounded-3xl bg-zinc-900 border border-zinc-700 text-xs flex items-center gap-x-2">
+                        <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                        <span class="text-emerald-400 font-medium">Live on WAX</span>
                     </div>
                 </div>
-                
-                <div class="flex items-center gap-x-4">
-                    <div class="hidden md:flex items-center gap-x-2 text-sm">
-                        <div class="px-3 py-1.5 rounded-3xl bg-zinc-900 border border-zinc-700 text-xs flex items-center gap-x-2">
-                            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                            <span class="text-emerald-400 font-medium">Live on WAX</span>
-                        </div>
-                        <div class="text-xs text-zinc-400">Last synced <span class="font-mono text-zinc-300">2m ago</span></div>
-                    </div>
-                    
-                    <button onclick="connectWallet()"
-                            class="px-5 py-2 rounded-3xl bg-white text-zinc-900 hover:bg-zinc-100 transition-colors text-sm font-semibold flex items-center gap-x-2">
-                        <i class="fa-solid fa-wallet"></i>
-                        <span>Connect Wallet</span>
-                    </button>
-                </div>
+                <button onclick="connectWallet()" class="px-5 py-2 rounded-3xl bg-white text-zinc-900 hover:bg-zinc-100 transition-colors text-sm font-semibold flex items-center gap-x-2">
+                    <i class="fa-solid fa-wallet"></i> <span>Connect Wallet</span>
+                </button>
             </div>
         </div>
     </nav>
 
     <div class="max-w-screen-2xl mx-auto px-8 pt-8 pb-16">
-        
         <!-- Hero Stats -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div class="glass border border-zinc-800 rounded-3xl p-6">
-                <div class="text-xs uppercase tracking-[1.5px] text-zinc-400 mb-1">Active Supply</div>
+                <div class="text-xs uppercase tracking-[1.5px] text-zinc-400 mb-1">Active Supply (Live)</div>
                 <div class="metric text-white" id="stat-active">121,578</div>
-                <div class="text-emerald-400 text-sm mt-1 flex items-center gap-x-1">
-                    <i class="fa-solid fa-arrow-trend-up"></i> <span>+342 today</span>
-                </div>
+                <div class="text-emerald-400 text-sm mt-1">4 demo survivors shown</div>
             </div>
             <div class="glass border border-zinc-800 rounded-3xl p-6">
-                <div class="text-xs uppercase tracking-[1.5px] text-zinc-400 mb-1">Total Minted</div>
-                <div class="metric text-white" id="stat-minted">125,420</div>
-                <div class="text-xs text-zinc-400 mt-1">99.2% of max supply</div>
+                <div class="text-xs uppercase tracking-[1.5px] text-zinc-400 mb-1">Templates Tracked</div>
+                <div class="metric text-white">2</div>
             </div>
             <div class="glass border border-zinc-800 rounded-3xl p-6">
-                <div class="text-xs uppercase tracking-[1.5px] text-zinc-400 mb-1">Burned</div>
-                <div class="metric text-white" id="stat-burned">3,842</div>
-                <div class="text-rose-400 text-sm mt-1 flex items-center gap-x-1">
-                    <i class="fa-solid fa-fire"></i> <span>3.1% burned</span>
-                </div>
+                <div class="text-xs uppercase tracking-[1.5px] text-zinc-400 mb-1">Avg Burn Rate</div>
+                <div class="metric text-white">99.97%</div>
             </div>
             <div class="glass border border-zinc-800 rounded-3xl p-6">
                 <div class="text-xs uppercase tracking-[1.5px] text-zinc-400 mb-1">Unique Holders</div>
-                <div class="metric text-white" id="stat-holders">8,742</div>
-                <div class="text-xs text-zinc-400 mt-1">Avg 13.9 heads / holder</div>
+                <div class="metric text-white" id="stat-holders">3</div>
             </div>
         </div>
 
         <!-- Tabs -->
-        <div class="flex border-b border-zinc-800 mb-6">
-            <button onclick="switchTab(0)" class="tab-button active px-6 py-3 text-sm font-medium border-b-2 border-indigo-500 text-white" data-tab="0">
-                <i class="fa-solid fa-tachometer-alt mr-2"></i> Dashboard
-            </button>
-            <button onclick="switchTab(1)" class="tab-button px-6 py-3 text-sm font-medium text-zinc-400 hover:text-white" data-tab="1">
-                <i class="fa-solid fa-trophy mr-2"></i> Holder Leaderboard
-            </button>
-            <button onclick="switchTab(2)" class="tab-button px-6 py-3 text-sm font-medium text-zinc-400 hover:text-white" data-tab="2">
-                <i class="fa-solid fa-gem mr-2"></i> Rarity Rankings
-            </button>
-            <button onclick="switchTab(3)" class="tab-button px-6 py-3 text-sm font-medium text-zinc-400 hover:text-white" data-tab="3">
-                <i class="fa-solid fa-info-circle mr-2"></i> How It Works
-            </button>
+        <div class="flex border-b border-zinc-800 mb-6 text-sm">
+            <button onclick="switchTab(0)" class="tab-button active px-6 py-3 font-medium border-b-2 border-indigo-500 text-white" data-tab="0">Dashboard</button>
+            <button onclick="switchTab(1)" class="tab-button px-6 py-3 font-medium text-zinc-400 hover:text-white" data-tab="1">Holder Leaderboard</button>
+            <button onclick="switchTab(2)" class="tab-button px-6 py-3 font-medium text-zinc-400 hover:text-white" data-tab="2">Rarity + Surviving Ranks</button>
+            <button onclick="switchTab(3)" class="tab-button px-6 py-3 font-medium text-zinc-400 hover:text-white" data-tab="3">Live Trait Exposure</button>
+            <button onclick="switchTab(4)" class="tab-button px-6 py-3 font-medium text-zinc-400 hover:text-white" data-tab="4">How It Works</button>
         </div>
 
         <!-- DASHBOARD TAB -->
         <div id="tab-0" class="tab-content">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <!-- Quick Search -->
                 <div class="lg:col-span-5 glass border border-zinc-800 rounded-3xl p-6">
-                    <div class="font-semibold mb-3 flex items-center gap-x-2">
-                        <i class="fa-solid fa-search text-indigo-400"></i> 
-                        <span>Quick Search</span>
-                    </div>
-                    <div class="relative">
-                        <input id="global-search" 
-                               type="text" 
-                               placeholder="Search wallet, asset ID or trait..." 
-                               onkeyup="filterAllTables()"
-                               class="w-full bg-zinc-900 border border-zinc-700 focus:border-indigo-500 transition-colors rounded-2xl px-4 py-3 pl-11 text-sm outline-none">
-                        <i class="fa-solid fa-search absolute left-4 top-3.5 text-zinc-500"></i>
-                    </div>
-                    <div class="mt-3 text-[10px] text-zinc-400">Try: "waxman.wam" or "Cyber" or "1000000002"</div>
+                    <div class="font-semibold mb-3 flex items-center gap-x-2"><i class="fa-solid fa-search text-indigo-400"></i> Quick Search</div>
+                    <input id="global-search" type="text" placeholder="Search wallet, asset ID, trait..." onkeyup="filterVisibleTables()" class="w-full bg-zinc-900 border border-zinc-700 focus:border-indigo-500 rounded-2xl px-4 py-3 pl-11 text-sm outline-none">
+                    <div class="mt-2 text-[10px] text-zinc-400">Try: "Legendary" or "1000000004" or "waxman.wam"</div>
                 </div>
 
-                <!-- Top Rarest Quick View -->
                 <div class="lg:col-span-7 glass border border-zinc-800 rounded-3xl p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="font-semibold flex items-center gap-x-2">
-                            <i class="fa-solid fa-gem text-amber-400"></i> 
-                            <span>Top 3 Rarest Right Now</span>
-                        </div>
-                        <button onclick="switchTab(2)" class="text-xs px-3 py-1 rounded-2xl border border-zinc-700 hover:bg-zinc-800 transition-colors">View full ranking →</button>
-                    </div>
+                    <div class="flex justify-between mb-4"><div class="font-semibold flex items-center gap-x-2"><i class="fa-solid fa-gem text-amber-400"></i> Top Weighted Rarest</div><button onclick="switchTab(2)" class="text-xs px-3 py-1 rounded-2xl border border-zinc-700 hover:bg-zinc-800">Full ranking →</button></div>
                     <div id="top-rarest-mini" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
                 </div>
 
-                <!-- Your Holdings (fake connected state) -->
+                <!-- Template Stats Cards -->
+                <div class="lg:col-span-12">
+                    <div class="font-semibold mb-3 flex items-center gap-x-2"><i class="fa-solid fa-layer-group text-violet-400"></i> Live Template Stats (Surviving Supply & Burn Rate)</div>
+                    <div id="template-stats-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+
                 <div class="lg:col-span-12 glass border border-zinc-800 rounded-3xl p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <div class="font-semibold flex items-center gap-x-2">
-                                <i class="fa-solid fa-user-shield text-emerald-400"></i> 
-                                <span>Your Holdings</span>
-                            </div>
-                            <div class="text-xs text-zinc-400">Connected as <span class="font-mono text-emerald-300">waxman.wam</span> (demo)</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-xs text-zinc-400">Total Value</div>
-                            <div class="text-emerald-400 font-semibold">1,240 heads • Rank #1</div>
-                        </div>
-                    </div>
-                    
-                    <div id="my-holdings" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3"></div>
+                    <div class="flex justify-between mb-4"><div class="font-semibold">Your Holdings (demo: waxman.wam)</div></div>
+                    <div id="my-holdings" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3"></div>
                 </div>
             </div>
         </div>
 
-        <!-- HOLDER LEADERBOARD TAB -->
+        <!-- HOLDER LEADERBOARD -->
         <div id="tab-1" class="tab-content hidden">
             <div class="glass border border-zinc-800 rounded-3xl overflow-hidden">
-                <div class="px-6 py-4 border-b border-zinc-700 flex items-center justify-between bg-zinc-900/60">
-                    <div class="font-semibold">Top Holders by Assets + Rarity Score</div>
-                    <div class="text-xs px-3 py-1 bg-zinc-800 rounded-2xl text-zinc-400">Updated moments ago</div>
-                </div>
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-b border-zinc-800 text-xs text-zinc-400">
-                            <th class="text-left py-3 px-6 font-normal">Rank</th>
-                            <th class="text-left py-3 font-normal">Wallet</th>
-                            <th class="text-right py-3 px-6 font-normal">Heads</th>
-                            <th class="text-right py-3 px-6 font-normal">Rarity Sum</th>
-                            <th class="text-right py-3 px-4 font-normal">Top Assets</th>
-                        </tr>
-                    </thead>
-                    <tbody id="holder-table-body" class="text-sm divide-y divide-zinc-800"></tbody>
-                </table>
+                <div class="px-6 py-4 border-b border-zinc-700 bg-zinc-900/60 font-semibold">Top Holders by Weighted Rarity Sum</div>
+                <table class="w-full"><thead><tr class="border-b border-zinc-800 text-xs text-zinc-400"><th class="text-left py-3 px-6">Rank</th><th class="text-left py-3">Wallet</th><th class="text-right py-3 px-6">Heads</th><th class="text-right py-3 px-6">Weighted Rarity Sum</th></tr></thead><tbody id="holder-table-body" class="text-sm divide-y divide-zinc-800"></tbody></table>
             </div>
         </div>
 
-        <!-- RARITY RANKINGS TAB -->
+        <!-- RARITY + SURVIVING RANKS TAB -->
         <div id="tab-2" class="tab-content hidden">
             <div class="glass border border-zinc-800 rounded-3xl overflow-hidden">
-                <div class="px-6 py-4 border-b border-zinc-700 flex items-center justify-between bg-zinc-900/60">
-                    <div>
-                        <div class="font-semibold">Rarity Leaderboard</div>
-                        <div class="text-xs text-zinc-400">Sorted by rarity score (higher = rarer)</div>
-                    </div>
-                    <div class="flex items-center gap-x-2 text-xs">
-                        <div class="px-2.5 py-1 bg-zinc-900 rounded-2xl border border-zinc-700">Showing top 100 of 121k</div>
-                    </div>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full min-w-[800px]">
-                        <thead>
-                            <tr class="border-b border-zinc-800 text-xs text-zinc-400">
-                                <th class="text-left py-3 px-6 font-normal w-16">Rank</th>
-                                <th class="text-left py-3 font-normal">Asset ID</th>
-                                <th class="text-left py-3 font-normal">Owner</th>
-                                <th class="text-center py-3 font-normal">Traits</th>
-                                <th class="text-right py-3 px-6 font-normal">Rarity Score</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rarity-table-body" class="text-sm divide-y divide-zinc-800"></tbody>
-                    </table>
-                </div>
+                <div class="px-6 py-4 border-b border-zinc-700 bg-zinc-900/60 flex justify-between"><div class="font-semibold">Rarity Leaderboard with Surviving Mint Ranks</div><div class="text-xs px-3 py-1 bg-zinc-800 rounded-2xl">Weighted by template size + mint # + rarity name</div></div>
+                <div class="overflow-x-auto"><table class="w-full min-w-[900px]"><thead><tr class="border-b border-zinc-800 text-xs text-zinc-400"><th class="py-3 px-6 text-left">Global Rank</th><th class="py-3 text-left">Asset ID</th><th class="py-3 text-left">Original Mint #</th><th class="py-3 text-left">Surviving Rank</th><th class="py-3 text-left">Owner</th><th class="py-3 text-right px-6">Weighted Score</th></tr></thead><tbody id="rarity-table-body" class="text-sm divide-y divide-zinc-800"></tbody></table></div>
             </div>
         </div>
 
-        <!-- HOW IT WORKS TAB -->
+        <!-- LIVE TRAIT EXPOSURE TAB -->
         <div id="tab-3" class="tab-content hidden">
-            <div class="glass border border-zinc-800 rounded-3xl p-8 max-w-3xl">
-                <h3 class="text-xl font-semibold mb-4">How the GK Nifty Heads Tracker Works</h3>
-                
-                <div class="space-y-6 text-sm text-zinc-300">
-                    <div class="flex gap-4">
-                        <div class="w-8 h-8 rounded-2xl bg-indigo-500/10 text-indigo-400 flex-shrink-0 flex items-center justify-center font-mono text-xs font-bold">01</div>
-                        <div>
-                            <div class="font-medium text-white mb-0.5">GitOps Serverless Pipeline</div>
-                            <div class="text-xs">GitHub Actions runs nightly for free. It fetches only new mints &amp; burns from the WAX AtomicAssets API, recalculates rarity, and commits fresh JSON files back to this repo.</div>
-                        </div>
+            <div class="glass border border-zinc-800 rounded-3xl p-6">
+                <div class="font-semibold mb-4">Live Trait Exposure (% of Current Survivors)</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <div class="text-sm font-medium mb-2 text-amber-400">Rarity Traits</div>
+                        <div id="rarity-trait-exposure" class="space-y-4"></div>
                     </div>
-                    
-                    <div class="flex gap-4">
-                        <div class="w-8 h-8 rounded-2xl bg-indigo-500/10 text-indigo-400 flex-shrink-0 flex items-center justify-center font-mono text-xs font-bold">02</div>
-                        <div>
-                            <div class="font-medium text-white mb-0.5">Pre-computed Everything</div>
-                            <div class="text-xs">No database queries at runtime. All rarity scores, holder rankings, and trait frequencies are calculated once per day and stored as tiny static JSON files served instantly via jsDelivr CDN.</div>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-4">
-                        <div class="w-8 h-8 rounded-2xl bg-indigo-500/10 text-indigo-400 flex-shrink-0 flex items-center justify-center font-mono text-xs font-bold">03</div>
-                        <div>
-                            <div class="font-medium text-white mb-0.5">Rarity Formula</div>
-                            <div class="text-xs">Standard statistical rarity: for every trait an asset has, we add <span class="font-mono">total_active / frequency_of_trait</span>. Higher score = rarer. Simple, transparent, and effective.</div>
-                        </div>
-                    </div>
-
-                    <div class="pt-4 border-t border-zinc-700 text-xs text-zinc-400">
-                        This exact system (or an improved version of it) can power your official portal. The code is 100% open and ready to extend.
+                    <div>
+                        <div class="text-sm font-medium mb-2 text-violet-400">Variation Traits</div>
+                        <div id="variation-trait-exposure" class="space-y-4"></div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- HOW IT WORKS -->
+        <div id="tab-4" class="tab-content hidden">
+            <div class="glass border border-zinc-800 rounded-3xl p-8 max-w-3xl text-sm">
+                <h3 class="text-xl font-semibold mb-4">How Weighted Rarity + Surviving Ranks Work</h3>
+                <div class="space-y-5 text-zinc-300">
+                    <div>Every night the GitHub Action re-calculates <strong>only from surviving (non-burned)</strong> assets.</div>
+                    <div><strong>Surviving Mint Rank</strong>: Assets are re-ranked 1→N within their template based on their original <code>template_mint</code> number among only the ones still alive.</div>
+                    <div><strong>Weighted Rarity Score</strong> = Base statistical rarity + bonuses for:
+                        <ul class="list-disc ml-6 mt-1 text-xs">
+                            <li>Smaller template max supply (template weight)</li>
+                            <li>Very low original mint numbers (#1–#10 get big bonus)</li>
+                            <li>"Legendary", "1/1", "Mythic" rarity name traits</li>
+                            <li>Special variation traits</li>
+                        </ul>
+                    </div>
+                    <div><strong>Live Trait Exposure</strong>: What % of the current surviving supply still carries each trait value. Updates automatically after every burn/mint.</div>
+                    <div class="pt-3 border-t border-zinc-700 text-xs">All of this is pre-computed into static JSON files → instant dashboard, zero database cost.</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Asset Detail Modal -->
-    <div id="asset-modal" onclick="if (event.target.id === 'asset-modal') closeModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+    <!-- Asset Modal -->
+    <div id="asset-modal" onclick="if (event.target.id === 'asset-modal') closeModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur z-[100] flex items-center justify-center p-4">
         <div onclick="event.stopImmediatePropagation()" class="glass border border-zinc-700 rounded-3xl max-w-md w-full overflow-hidden">
             <div class="p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <div id="modal-asset-id" class="font-mono text-xs text-zinc-400"></div>
-                        <div id="modal-rank" class="text-3xl font-bold tracking-tighter"></div>
-                    </div>
-                    <button onclick="closeModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
-                </div>
-
-                <div class="my-6 h-48 bg-zinc-900 rounded-2xl flex items-center justify-center">
-                    <div class="text-center">
-                        <i class="fa-solid fa-head-side-mask text-6xl text-zinc-700"></i>
-                        <div class="text-xs mt-2 text-zinc-500">IPFS Image Placeholder</div>
-                    </div>
-                </div>
-
-                <div id="modal-traits" class="grid grid-cols-2 gap-2 text-sm"></div>
-
-                <div class="mt-6 pt-6 border-t border-zinc-700 flex items-center justify-between text-sm">
-                    <div>
-                        <div class="text-xs text-zinc-400">Owner</div>
-                        <div id="modal-owner" class="font-mono text-emerald-300"></div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-xs text-zinc-400">Rarity Score</div>
-                        <div id="modal-score" class="font-bold text-2xl text-amber-400"></div>
-                    </div>
+                <div class="flex justify-between"><div><div id="modal-asset-id" class="font-mono text-xs text-zinc-400"></div><div id="modal-rank" class="text-3xl font-bold tracking-tighter"></div></div><button onclick="closeModal()" class="text-zinc-400 hover:text-white text-xl">&times;</button></div>
+                <div class="my-6 h-40 bg-zinc-900 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-head-side-mask text-6xl text-zinc-700"></i></div>
+                <div id="modal-traits" class="grid grid-cols-2 gap-2 text-sm mb-4"></div>
+                <div class="grid grid-cols-2 gap-4 text-sm border-t border-zinc-700 pt-4">
+                    <div><div class="text-xs text-zinc-400">Original Mint #</div><div id="modal-original-mint" class="font-mono font-semibold"></div></div>
+                    <div><div class="text-xs text-zinc-400">Surviving Rank in Template</div><div id="modal-surviving-rank" class="font-mono font-semibold text-emerald-400"></div></div>
+                    <div><div class="text-xs text-zinc-400">Weighted Rarity Score</div><div id="modal-weighted" class="font-bold text-2xl text-amber-400"></div></div>
+                    <div><div class="text-xs text-zinc-400">Base Score</div><div id="modal-base" class="font-mono"></div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
-        Demo built for Waxman &amp; the GK Nifty Heads community • Data pipeline ready at 
-        <a href="https://github.com/henrikpiga/gkniftyheads-tracker" target="_blank" class="text-indigo-400 hover:underline">github.com/henrikpiga/gkniftyheads-tracker</a>
-    </footer>
+    <footer class="border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">Updated demo supporting Waxman’s weighted rarity + surviving mint ranks • <a href="https://github.com/henrikpiga/gkniftyheads-tracker" class="text-indigo-400 hover:underline">View full repo</a></footer>
 
     <script>
-        // Tailwind script
-        function initializeTailwind() {
-            document.documentElement.style.setProperty('--accent', '#6366f1');
-        }
-
-        // Sample data matching the repo's data/leaderboard.json and schemas
         let sampleData = {
             holders: [
-                { wallet: "waxman.wam", assets_count: 1240, rarity_sum: 45231.75, top_assets: ["1000000001", "1000000456", "1000000891"] },
-                { wallet: "topcollector.wam", assets_count: 987, rarity_sum: 38920.40, top_assets: ["1000000002", "1000000312"] },
-                { wallet: "niftyhodler.wam", assets_count: 654, rarity_sum: 28450.10, top_assets: ["1000000789"] },
-                { wallet: "headmaster.wam", assets_count: 412, rarity_sum: 19230.55, top_assets: ["1000000123"] },
-                { wallet: "rareape.wam", assets_count: 289, rarity_sum: 14580.20, top_assets: ["1000000567", "1000000999"] }
+                { wallet: "waxman.wam", assets_count: 2, rarity_sum: 3124.5, top_assets: ["1000000001", "1000000003"] },
+                { wallet: "collector1.wam", assets_count: 1, rarity_sum: 1456.2, top_assets: ["1000000002"] },
+                { wallet: "topcollector.wam", assets_count: 1, rarity_sum: 1876.45, top_assets: ["1000000004"] }
             ],
             rarity: [
-                { rank: 1, asset_id: "1000000002", template_id: 12346, rarity_score: 1247.82, owner: "collector1.wam", traits: { "Head Style": "Cyber", "Background": "Void", "Accessory": "Headphones" } },
-                { rank: 2, asset_id: "1000000001", template_id: 12345, rarity_score: 892.45, owner: "waxman.wam", traits: { "Head Style": "Classic", "Background": "Neon Grid", "Accessory": "None" } },
-                { rank: 3, asset_id: "1000000456", template_id: 12345, rarity_score: 781.30, owner: "waxman.wam", traits: { "Head Style": "Neon", "Background": "Cyber City", "Accessory": "Cap" } },
-                { rank: 4, asset_id: "1000000312", template_id: 12346, rarity_score: 654.90, owner: "topcollector.wam", traits: { "Head Style": "Cyber", "Background": "Void", "Accessory": "Headphones" } },
-                { rank: 5, asset_id: "1000000789", template_id: 12345, rarity_score: 612.15, owner: "niftyhodler.wam", traits: { "Head Style": "Classic", "Background": "Neon Grid", "Accessory": "None" } }
+                { rank: 1, asset_id: "1000000004", template_id: 12346, original_template_mint: 42, surviving_mint_rank: 2, weighted_rarity_score: 1876.45, base_rarity_score: 1247.82, owner: "topcollector.wam", traits: { "Head Style": "Neon", "Background": "Cyber City", "Rarity Tier": "Legendary", "Variation": "1/1 Unique" } },
+                { rank: 2, asset_id: "1000000002", template_id: 12346, original_template_mint: 7, surviving_mint_rank: 1, weighted_rarity_score: 1456.2, base_rarity_score: 892.45, owner: "collector1.wam", traits: { "Head Style": "Cyber", "Background": "Void", "Rarity Tier": "Epic", "Variation": "Special Edition" } },
+                { rank: 3, asset_id: "1000000001", template_id: 12345, original_template_mint: 1, surviving_mint_rank: 1, weighted_rarity_score: 1245.3, base_rarity_score: 892.45, owner: "waxman.wam", traits: { "Head Style": "Classic", "Background": "Neon Grid", "Rarity Tier": "Legendary", "Variation": "Standard" } }
             ],
             myAssets: [
-                { asset_id: "1000000001", rarity_score: 892.45, traits: { "Head Style": "Classic", "Background": "Neon Grid" } },
-                { asset_id: "1000000456", rarity_score: 781.30, traits: { "Head Style": "Neon", "Background": "Cyber City" } },
-                { asset_id: "1000000891", rarity_score: 543.20, traits: { "Head Style": "Classic", "Background": "Void" } }
-            ]
+                { asset_id: "1000000001", original_template_mint: 1, surviving_mint_rank: 1, weighted_rarity_score: 1245.3, traits: { "Head Style": "Classic", "Rarity Tier": "Legendary" } },
+                { asset_id: "1000000003", original_template_mint: 2, surviving_mint_rank: 2, weighted_rarity_score: 879.0, traits: { "Head Style": "Classic", "Rarity Tier": "Rare" } }
+            ],
+            templateStats: {
+                "12345": { template_id: 12345, original_max_supply: 10000, surviving_count: 2, burn_rate_percent: 99.98, avg_rarity_score: 1245.3, lowest_surviving_mint: 1, highest_surviving_mint: 2 },
+                "12346": { template_id: 12346, original_max_supply: 5000, surviving_count: 2, burn_rate_percent: 99.96, avg_rarity_score: 1666.33, lowest_surviving_mint: 7, highest_surviving_mint: 42 }
+            },
+            traitExposure: {
+                rarity_traits: {
+                    "Rarity Tier:Legendary": { count: 2, percent_of_survivors: 50 },
+                    "Rarity Tier:Epic": { count: 1, percent_of_survivors: 25 },
+                    "Rarity Tier:Rare": { count: 1, percent_of_survivors: 25 }
+                },
+                variation_traits: {
+                    "Variation:Standard": { count: 2, percent_of_survivors: 50 },
+                    "Variation:Special Edition": { count: 1, percent_of_survivors: 25 },
+                    "Variation:1/1 Unique": { count: 1, percent_of_survivors: 25 }
+                }
+            }
         };
 
         function getRarityTier(score) {
-            if (score > 900) return { tier: 'Legendary', cls: 'rarity-legendary' };
-            if (score > 650) return { tier: 'Epic', cls: 'rarity-epic' };
-            if (score > 450) return { tier: 'Rare', cls: 'rarity-rare' };
-            if (score > 300) return { tier: 'Uncommon', cls: 'rarity-uncommon' };
-            return { tier: 'Common', cls: 'rarity-common' };
+            if (score > 1500) return { tier: 'Legendary', cls: 'rarity-legendary' };
+            if (score > 1000) return { tier: 'Epic', cls: 'rarity-epic' };
+            if (score > 700) return { tier: 'Rare', cls: 'rarity-rare' };
+            return { tier: 'Uncommon', cls: 'rarity-uncommon' };
+        }
+
+        function renderTemplateStats() {
+            const container = document.getElementById('template-stats-grid');
+            container.innerHTML = '';
+            Object.values(sampleData.templateStats).forEach(t => {
+                const el = document.createElement('div');
+                el.className = 'glass border border-zinc-700 rounded-3xl p-5';
+                el.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div><div class="font-mono text-xs text-zinc-400">Template #${t.template_id}</div><div class="font-semibold text-lg">${t.surviving_count} / ${t.original_max_supply.toLocaleString()} surviving</div></div>
+                        <div class="text-right"><div class="text-xs text-zinc-400">Burn Rate</div><div class="font-bold text-rose-400">${t.burn_rate_percent}%</div></div>
+                    </div>
+                    <div class="mt-4 text-xs flex justify-between text-zinc-400"><div>Lowest surviving mint: <span class="font-mono text-white">#${t.lowest_surviving_mint}</span></div><div>Avg weighted rarity: <span class="font-mono text-emerald-400">${t.avg_rarity_score}</span></div></div>
+                `;
+                container.appendChild(el);
+            });
         }
 
         function renderTopRarestMini() {
             const container = document.getElementById('top-rarest-mini');
             container.innerHTML = '';
-            
-            sampleData.rarity.slice(0, 3).forEach(item => {
-                const tier = getRarityTier(item.rarity_score);
+            sampleData.rarity.slice(0,3).forEach(item => {
+                const tier = getRarityTier(item.weighted_rarity_score);
                 const el = document.createElement('div');
-                el.className = `nft-card cursor-pointer bg-zinc-900 border border-zinc-700 rounded-2xl p-4 flex flex-col`;
+                el.className = `nft-card cursor-pointer bg-zinc-900 border border-zinc-700 rounded-2xl p-4`;
                 el.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="font-mono text-xs text-zinc-400">#${item.asset_id}</div>
-                            <div class="font-semibold mt-1">${item.traits["Head Style"] || 'Nifty Head'}</div>
-                        </div>
-                        <div class="${tier.cls} text-[10px] px-2.5 py-px rounded-2xl font-bold self-start">${tier.tier}</div>
-                    </div>
-                    <div class="mt-auto pt-4 flex justify-between items-end">
-                        <div>
-                            <div class="text-[10px] text-zinc-400">Rarity</div>
-                            <div class="font-mono text-lg font-semibold">${item.rarity_score}</div>
-                        </div>
-                        <button onclick="showAssetModal(${JSON.stringify(item).replace(/"/g, '&quot;')})" 
-                                class="text-xs px-3 py-1 rounded-2xl border border-zinc-600 hover:bg-zinc-800 transition-colors">Details</button>
-                    </div>
+                    <div class="flex justify-between"><div><div class="font-mono text-xs text-zinc-400">#${item.asset_id}</div><div class="font-semibold">${item.traits["Head Style"] || 'Head'}</div></div><div class="${tier.cls} text-[10px] px-2.5 py-px rounded-2xl font-bold self-start">${tier.tier}</div></div>
+                    <div class="mt-4 flex justify-between items-end text-xs"><div><div class="text-zinc-400">Surviving Rank</div><div class="font-mono">#${item.surviving_mint_rank}</div></div><div class="text-right"><div class="text-zinc-400">Weighted</div><div class="font-mono text-lg font-semibold">${item.weighted_rarity_score}</div></div></div>
+                    <button onclick="showAssetModal(${JSON.stringify(item).replace(/"/g,'&quot;')})" class="mt-3 w-full text-xs py-1.5 rounded-2xl border border-zinc-600 hover:bg-zinc-800">Details</button>
                 `;
                 container.appendChild(el);
             });
@@ -395,28 +258,16 @@
         function renderMyHoldings() {
             const container = document.getElementById('my-holdings');
             container.innerHTML = '';
-            
             sampleData.myAssets.forEach(asset => {
-                const tier = getRarityTier(asset.rarity_score);
+                const tier = getRarityTier(asset.weighted_rarity_score);
                 const el = document.createElement('div');
                 el.className = `nft-card bg-zinc-900 border border-zinc-700 rounded-2xl p-3 text-xs cursor-pointer`;
                 el.innerHTML = `
-                    <div class="font-mono text-[10px] text-zinc-400">#${asset.asset_id}</div>
-                    <div class="mt-1 font-semibold">${asset.traits["Head Style"] || 'Head'}</div>
-                    <div class="mt-2 flex items-center justify-between">
-                        <div class="${tier.cls} inline-block text-[9px] px-2 py-px rounded-2xl font-bold">${tier.tier}</div>
-                        <div class="font-mono text-right text-emerald-400">${asset.rarity_score}</div>
-                    </div>
+                    <div class="font-mono text-[10px] text-zinc-400">#${asset.asset_id} • Orig Mint #${asset.original_template_mint}</div>
+                    <div class="mt-1 font-semibold">Surviving Rank: #${asset.surviving_mint_rank}</div>
+                    <div class="mt-2 flex justify-between items-center"><div class="${tier.cls} text-[9px] px-2 py-px rounded-2xl font-bold">${tier.tier}</div><div class="font-mono text-emerald-400">${asset.weighted_rarity_score}</div></div>
                 `;
-                el.onclick = () => {
-                    // Find full item from rarity list or create minimal
-                    const fullItem = sampleData.rarity.find(r => r.asset_id === asset.asset_id) || {
-                        ...asset,
-                        rank: '—',
-                        owner: 'waxman.wam'
-                    };
-                    showAssetModal(fullItem);
-                };
+                el.onclick = () => showAssetModal(asset);
                 container.appendChild(el);
             });
         }
@@ -424,27 +275,10 @@
         function renderHolderTable(filter = '') {
             const tbody = document.getElementById('holder-table-body');
             tbody.innerHTML = '';
-            
-            const filtered = sampleData.holders.filter(h => 
-                h.wallet.toLowerCase().includes(filter.toLowerCase())
-            );
-            
-            filtered.forEach((holder, index) => {
+            sampleData.holders.filter(h => h.wallet.toLowerCase().includes(filter.toLowerCase())).forEach((h,i) => {
                 const row = document.createElement('tr');
-                row.className = 'leaderboard-row';
-                row.innerHTML = `
-                    <td class="py-3 px-6 font-mono text-xs text-zinc-400">#${index + 1}</td>
-                    <td class="py-3 font-medium">${holder.wallet}</td>
-                    <td class="py-3 px-6 text-right font-semibold">${holder.assets_count.toLocaleString()}</td>
-                    <td class="py-3 px-6 text-right font-mono text-emerald-400">${holder.rarity_sum.toLocaleString()}</td>
-                    <td class="py-3 px-4 text-right">
-                        <div class="flex justify-end gap-x-1">
-                            ${holder.top_assets.map(id => 
-                                `<span onclick="event.stopImmediatePropagation(); showAssetById('${id}')" class="cursor-pointer px-2 py-px text-[10px] rounded bg-zinc-800 hover:bg-zinc-700 font-mono">${id.slice(-4)}</span>`
-                            ).join('')}
-                        </div>
-                    </td>
-                `;
+                row.className = 'hover:bg-zinc-900';
+                row.innerHTML = `<td class="py-3 px-6 font-mono text-xs">#${i+1}</td><td class="py-3 font-medium">${h.wallet}</td><td class="py-3 px-6 text-right">${h.assets_count}</td><td class="py-3 px-6 text-right font-mono text-emerald-400">${h.rarity_sum}</td>`;
                 tbody.appendChild(row);
             });
         }
@@ -452,145 +286,102 @@
         function renderRarityTable(filter = '') {
             const tbody = document.getElementById('rarity-table-body');
             tbody.innerHTML = '';
-            
-            const filtered = sampleData.rarity.filter(item => {
-                const search = filter.toLowerCase();
-                return item.asset_id.includes(search) || 
-                       item.owner.toLowerCase().includes(search) ||
-                       Object.values(item.traits).some(v => v.toLowerCase().includes(search));
-            });
-            
-            filtered.forEach(item => {
-                const tier = getRarityTier(item.rarity_score);
+            sampleData.rarity.filter(r => r.asset_id.includes(filter) || r.owner.toLowerCase().includes(filter) || Object.values(r.traits).some(v => v.toLowerCase().includes(filter))).forEach(item => {
+                const tier = getRarityTier(item.weighted_rarity_score);
                 const row = document.createElement('tr');
-                row.className = 'leaderboard-row cursor-pointer';
+                row.className = 'cursor-pointer hover:bg-zinc-900';
                 row.onclick = () => showAssetModal(item);
-                
-                let traitsHTML = '';
-                Object.entries(item.traits).forEach(([key, val]) => {
-                    traitsHTML += `<span class="trait-pill mr-1 mb-1 inline-block">${key}: ${val}</span>`;
-                });
-                
                 row.innerHTML = `
-                    <td class="py-3 px-6"><span class="font-mono text-xs bg-zinc-800 px-2 py-px rounded">#${item.rank}</span></td>
+                    <td class="py-3 px-6 font-mono text-xs">#${item.rank}</td>
                     <td class="py-3 font-mono">${item.asset_id}</td>
+                    <td class="py-3 font-mono text-xs">#${item.original_template_mint}</td>
+                    <td class="py-3"><span class="px-2 py-px bg-emerald-900/60 text-emerald-400 rounded text-xs font-mono">#${item.surviving_mint_rank}</span></td>
                     <td class="py-3 text-emerald-300 font-mono text-xs">${item.owner}</td>
-                    <td class="py-3"><div class="flex flex-wrap">${traitsHTML}</div></td>
-                    <td class="py-3 px-6 text-right">
-                        <div class="font-mono font-semibold">${item.rarity_score}</div>
-                        <div class="text-[10px] ${tier.cls.replace('background', 'text')} font-bold">${tier.tier}</div>
-                    </td>
+                    <td class="py-3 px-6 text-right font-mono font-semibold">${item.weighted_rarity_score}</td>
                 `;
                 tbody.appendChild(row);
             });
         }
 
-        function filterAllTables() {
-            const val = document.getElementById('global-search').value;
-            // Only filter the currently visible table
-            const activeTab = document.querySelector('.tab-content:not(.hidden)');
-            if (!activeTab) return;
-            
-            if (activeTab.id === 'tab-1') {
-                renderHolderTable(val);
-            } else if (activeTab.id === 'tab-2') {
-                renderRarityTable(val);
-            }
+        function renderTraitExposure() {
+            // Rarity traits
+            const rContainer = document.getElementById('rarity-trait-exposure');
+            rContainer.innerHTML = '';
+            Object.entries(sampleData.traitExposure.rarity_traits).forEach(([key, val]) => {
+                const el = document.createElement('div');
+                el.innerHTML = `<div class="flex justify-between text-xs mb-1"><span>${key}</span><span class="font-mono">${val.percent_of_survivors}%</span></div><div class="bg-zinc-800 rounded-full h-1.5"><div class="exposure-bar" style="width:${val.percent_of_survivors}%"></div></div>`;
+                rContainer.appendChild(el);
+            });
+
+            // Variation traits
+            const vContainer = document.getElementById('variation-trait-exposure');
+            vContainer.innerHTML = '';
+            Object.entries(sampleData.traitExposure.variation_traits).forEach(([key, val]) => {
+                const el = document.createElement('div');
+                el.innerHTML = `<div class="flex justify-between text-xs mb-1"><span>${key}</span><span class="font-mono">${val.percent_of_survivors}%</span></div><div class="bg-zinc-800 rounded-full h-1.5"><div class="exposure-bar" style="width:${val.percent_of_survivors}%"></div></div>`;
+                vContainer.appendChild(el);
+            });
+        }
+
+        function filterVisibleTables() {
+            const val = document.getElementById('global-search').value.toLowerCase();
+            const active = document.querySelector('.tab-content:not(.hidden)');
+            if (!active) return;
+            if (active.id === 'tab-1') renderHolderTable(val);
+            if (active.id === 'tab-2') renderRarityTable(val);
         }
 
         function switchTab(tabIndex) {
-            // Hide all
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-button').forEach(el => {
-                el.classList.remove('active', 'border-b-2', 'border-indigo-500', 'text-white');
-                el.classList.add('text-zinc-400');
-            });
-            
-            // Show selected
-            document.getElementById(`tab-${tabIndex}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active','border-b-2','border-indigo-500','text-white'));
             const btn = document.querySelector(`[data-tab="${tabIndex}"]`);
-            btn.classList.add('active', 'border-b-2', 'border-indigo-500', 'text-white');
-            btn.classList.remove('text-zinc-400');
-            
-            // Re-render tables when switching
-            if (tabIndex === 1) renderHolderTable(document.getElementById('global-search').value);
-            if (tabIndex === 2) renderRarityTable(document.getElementById('global-search').value);
+            btn.classList.add('active','border-b-2','border-indigo-500','text-white');
+            document.getElementById(`tab-${tabIndex}`).classList.remove('hidden');
+
+            if (tabIndex === 1) renderHolderTable();
+            if (tabIndex === 2) renderRarityTable();
+            if (tabIndex === 3) renderTraitExposure();
         }
 
         function showAssetModal(item) {
             const modal = document.getElementById('asset-modal');
             document.getElementById('modal-asset-id').textContent = `#${item.asset_id}`;
-            document.getElementById('modal-rank').innerHTML = item.rank ? `#${item.rank} <span class="text-base align-super text-zinc-400">RARITY</span>` : '—';
-            document.getElementById('modal-owner').textContent = item.owner || '—';
-            document.getElementById('modal-score').textContent = item.rarity_score || '—';
-            
-            const traitsContainer = document.getElementById('modal-traits');
-            traitsContainer.innerHTML = '';
-            
-            const traits = item.traits || {};
-            Object.entries(traits).forEach(([key, value]) => {
-                const pill = document.createElement('div');
-                pill.className = 'px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-2xl text-xs';
-                pill.innerHTML = `<span class="text-zinc-400">${key}</span><br><span class="font-medium">${value}</span>`;
-                traitsContainer.appendChild(pill);
+            document.getElementById('modal-rank').innerHTML = item.rank ? `#${item.rank} <span class="text-base align-super text-zinc-400">GLOBAL</span>` : '';
+            document.getElementById('modal-original-mint').textContent = item.original_template_mint ? `#${item.original_template_mint}` : '—';
+            document.getElementById('modal-surviving-rank').textContent = item.surviving_mint_rank ? `#${item.surviving_mint_rank} in template` : '—';
+            document.getElementById('modal-weighted').textContent = item.weighted_rarity_score || '—';
+            document.getElementById('modal-base').textContent = item.base_rarity_score || '—';
+
+            const traitsEl = document.getElementById('modal-traits');
+            traitsEl.innerHTML = '';
+            Object.entries(item.traits || {}).forEach(([k,v]) => {
+                const d = document.createElement('div');
+                d.className = 'px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-2xl text-xs';
+                d.innerHTML = `<span class="text-zinc-400">${k}</span><br><span class="font-medium">${v}</span>`;
+                traitsEl.appendChild(d);
             });
-            
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
         }
 
         function closeModal() {
-            const modal = document.getElementById('asset-modal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
-
-        function showAssetById(assetId) {
-            const item = sampleData.rarity.find(r => r.asset_id === assetId);
-            if (item) {
-                showAssetModal(item);
-            } else {
-                alert('Asset details would load from full data in production.');
-            }
+            const m = document.getElementById('asset-modal');
+            m.classList.remove('flex'); m.classList.add('hidden');
         }
 
         function connectWallet() {
-            const btns = document.querySelectorAll('button');
-            btns.forEach(b => {
-                if (b.textContent.includes('Connect')) {
-                    b.innerHTML = `<i class="fa-solid fa-check"></i> <span>Connected • waxman.wam</span>`;
-                    b.classList.add('!bg-emerald-500', '!text-white');
-                    setTimeout(() => {
-                        alert('In production this would connect via WaxJS / Anchor and filter the dashboard to your personal holdings + rankings.');
-                    }, 600);
-                }
-            });
+            alert('In production: Connect WAX wallet → filter dashboard to your personal surviving ranks, weighted scores & trait exposure.');
         }
 
         function initializeDemo() {
-            initializeTailwind();
-            
-            // Initial renders
+            renderTemplateStats();
             renderTopRarestMini();
             renderMyHoldings();
             renderHolderTable();
             renderRarityTable();
-            
-            // Seed global search on dashboard
-            const searchInput = document.getElementById('global-search');
-            searchInput.addEventListener('input', () => {
-                // If user is on dashboard, we can optionally highlight or do nothing
-                // For simplicity we just let them switch tabs
-            });
-
-            // Keyboard hint
-            console.log('%c[Demo] GK Nifty Heads interactive demo ready. All data is mock but mirrors real pipeline output.', 'color:#64748b');
-            
-            // Show dashboard by default
+            renderTraitExposure();
             document.getElementById('tab-0').classList.remove('hidden');
+            console.log('%c[Demo v0.95] GK Nifty Heads - now with weighted rarity, surviving mint ranks & live trait exposure', 'color:#64748b');
         }
-
-        // Boot everything
         window.onload = initializeDemo;
     </script>
 </body>

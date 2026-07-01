@@ -1,0 +1,30 @@
+{
+  "rarity_traits": {
+    "Rarity Tier:Legendary": {
+      "count": 2,
+      "percent_of_survivors": 50
+    },
+    "Rarity Tier:Epic": {
+      "count": 1,
+      "percent_of_survivors": 25
+    },
+    "Rarity Tier:Rare": {
+      "count": 1,
+      "percent_of_survivors": 25
+    }
+  },
+    "variation_traits": {
+    "Variation:Standard": {
+      "count": 2,
+      "percent_of_survivors": 50
+    },
+    "Variation:Special Edition": {
+      "count": 1,
+      "percent_of_survivors": 25
+    },
+    "Variation:1/1 Unique": {
+      "count": 1,
+      "percent_of_survivors": 25
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "12345": {
+    "template_id": 12345,
+    "original_max_supply": 10000,
+    "surviving_count": 2,
+    "burn_rate_percent": 99.98,
+    "avg_rarity_score": 1245.3,
+    "lowest_surviving_mint": 1,
+    "highest_surviving_mint": 2
+  },
+  "12346": {
+    "template_id": 12346,
+    "original_max_supply": 5000,
+    "surviving_count": 2,
+    "burn_rate_percent": 99.96,
+    "avg_rarity_score": 1666.33,
+    "lowest_surviving_mint": 7,
+    "highest_surviving_mint": 42
+  }
+}

@@ -1,54 +1,56 @@
 {
-  "last_updated": "2026-07-01T15:44:00Z",
+  "last_updated": "2026-07-01T15:50:00Z",
   "collection": {
     "name": "gkniftyheads",
     "total_minted": 125420,
-    "active_supply": 121578,
-    "burned": 3842
+    "active_supply": 4,
+    "burned": 0
   },
   "holder_leaderboard": [
     {
       "wallet": "waxman.wam",
-      "assets_count": 1240,
-      "rarity_sum": 45231.75,
-      "top_assets": ["1000000001", "1000000456", "1000000891"]
+      "assets_count": 2,
+      "rarity_sum": 3124.5,
+      "top_assets": ["1000000001", "1000000003"]
     },
     {
-      "wallet": "topcollector.wam",
-      "assets_count": 987,
-      "rarity_sum": 38920.4,
-      "top_assets": ["1000000002", "1000000312"]
-    },
-    {
-      "wallet": "niftyhodler.wam",
-      "assets_count": 654,
-      "rarity_sum": 28450.1,
-      "top_assets": ["1000000789"]
+      "wallet": "collector1.wam",
+      "assets_count": 1,
+      "rarity_sum": 1456.2,
+      "top_assets": ["1000000002"]
     }
   ],
   "rarity_leaderboard": [
     {
       "rank": 1,
-      "asset_id": "1000000002",
+      "asset_id": "1000000004",
       "template_id": 12346,
-      "rarity_score": 1247.82,
-      "owner": "collector1.wam",
+      "original_template_mint": 42,
+      "surviving_mint_rank": 2,
+      "weighted_rarity_score": 1876.45,
+      "base_rarity_score": 1247.82,
+      "owner": "topcollector.wam",
       "traits": {
-        "Head Style": "Cyber",
-        "Background": "Void",
-        "Accessory": "Headphones"
+        "Head Style": "Neon",
+        "Background": "Cyber City",
+        "Rarity Tier": "Legendary",
+        "Variation": "1/1 Unique"
       }
     },
     {
       "rank": 2,
-      "asset_id": "1000000001",
-      "template_id": 12345,
-      "rarity_score": 892.45,
-      "owner": "waxman.wam",
+      "asset_id": "1000000002",
+      "template_id": 12346,
+      "original_template_mint": 7,
+      "surviving_mint_rank": 1,
+      "weighted_rarity_score": 1456.2,
+      "base_rarity_score": 892.45,
+      "owner": "collector1.wam",
       "traits": {
-        "Head Style": "Classic",
-        "Background": "Neon Grid",
-        "Accessory": "None"
+        "Head Style": "Cyber",
+        "Background": "Void",
+        "Rarity Tier": "Epic",
+        "Variation": "Special Edition"
       }
     }
   ]

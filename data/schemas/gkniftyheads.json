@@ -2,25 +2,61 @@
   {
     "asset_id": "1000000001",
     "template_id": 12345,
+    "template_mint": 1,
     "schema_name": "gkniftyheads",
     "owner": "waxman.wam",
     "burned": false,
+    "template_max_supply": 10000,
     "attributes": [
       {"trait_type": "Head Style", "value": "Classic"},
       {"trait_type": "Background", "value": "Neon Grid"},
-      {"trait_type": "Accessory", "value": "None"}
+      {"trait_type": "Rarity Tier", "value": "Legendary"},
+      {"trait_type": "Variation", "value": "Standard"}
     ]
   },
   {
     "asset_id": "1000000002",
     "template_id": 12346,
+    "template_mint": 7,
     "schema_name": "gkniftyheads",
     "owner": "collector1.wam",
     "burned": false,
+    "template_max_supply": 5000,
     "attributes": [
       {"trait_type": "Head Style", "value": "Cyber"},
       {"trait_type": "Background", "value": "Void"},
-      {"trait_type": "Accessory", "value": "Headphones"}
+      {"trait_type": "Rarity Tier", "value": "Epic"},
+      {"trait_type": "Variation", "value": "Special Edition"}
+    ]
+  },
+  {
+    "asset_id": "1000000003",
+    "template_id": 12345,
+    "template_mint": 2,
+    "schema_name": "gkniftyheads",
+    "owner": "waxman.wam",
+    "burned": false,
+    "template_max_supply": 10000,
+    "attributes": [
+      {"trait_type": "Head Style", "value": "Classic"},
+      {"trait_type": "Background", "value": "Neon Grid"},
+      {"trait_type": "Rarity Tier", "value": "Rare"},
+      {"trait_type": "Variation", "value": "Standard"}
+    ]
+  },
+  {
+    "asset_id": "1000000004",
+    "template_id": 12346,
+    "template_mint": 42,
+    "schema_name": "gkniftyheads",
+    "owner": "topcollector.wam",
+    "burned": false,
+    "template_max_supply": 5000,
+    "attributes": [
+      {"trait_type": "Head Style", "value": "Neon"},
+      {"trait_type": "Background", "value": "Cyber City"},
+      {"trait_type": "Rarity Tier", "value": "Legendary"},
+      {"trait_type": "Variation", "value": "1/1 Unique"}
     ]
   }
 ]
