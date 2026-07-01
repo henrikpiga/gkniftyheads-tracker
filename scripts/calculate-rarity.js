@@ -1,18 +1,51 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { gzipSync } from 'zlib'; // for optional GZIP output
 
 const DATA_DIR = path.join(process.cwd(), 'data');
 const SCHEMAS_DIR = path.join(DATA_DIR, 'schemas');
+
+// Load configuration
+let CONFIG;
+try {
+  const configContent = await fs.readFile(path.join(process.cwd(), 'config.json'), 'utf8');
+  CONFIG = JSON.parse(configContent);
+} catch {
+  CONFIG = {
+    weights: {
+      templateSupplyWeight: 0.3,
+      mintNumberBonus: { top10: 5.0, top100: 2.0, special69: 3.0, under1000: 1.0 },
+      rarityNameMultipliers: { Legendary: 4.0, Mythic: 3.5, Epic: 2.5, '1/1': 5.0, Rare: 1.8, Uncommon: 1.3, Common: 1.0 },
+      variationMultiplier: 1.8
+    },
+    gzipOutputs: false,
+    maxRarityLeaderboard: 100
+  };
+}
+
+const WEIGHTS = CONFIG.weights || {};
+const GZIP_OUTPUTS = CONFIG.gzipOutputs || false;
 
 async function readJSON(p) {
   return JSON.parse(await fs.readFile(p, 'utf8'));
 }
 
 async function writeJSON(filePath, data) {
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+  const jsonStr = JSON.stringify(data, null, 2);
+  await fs.writeFile(filePath, jsonStr);
+
+  if (GZIP_OUTPUTS) {
+    try {
+      const gzipped = gzipSync(Buffer.from(jsonStr));
+      await fs.writeFile(filePath + '.gz', gzipped);
+      console.log(`   📦 Gzipped: ${path.basename(filePath)}.gz (${(gzipped.length / 1024).toFixed(1)} KB)`);
+    } catch (e) {
+      console.warn('   GZIP write failed (non-critical):', e.message);
+    }
+  }
 }
 
-// Helper: safe log for weighting
+// Helper: safe log (unused in current formula but available for future log-based scoring)
 function safeLog(x) {
   return Math.log(Math.max(x, 2));
 }
@@ -24,18 +57,28 @@ async function calculateRarity() {
   const activeAssets = assets.filter(a => !a.burned && a.owner);
 
   if (activeAssets.length === 0) {
-    console.log('No active assets.');
+    console.log('No active assets found. Exiting.');
     return;
   }
 
   const totalSurvivors = activeAssets.length;
+  console.log(`Processing ${totalSurvivors} surviving assets...`);
 
   // 1. Trait frequency counts (only among survivors)
+  // Handles both array form [{trait_type, value}] and object form {rarity: "Common", variation: "Classic"}
   const traitCounts = {};
   for (const asset of activeAssets) {
-    for (const attr of (asset.attributes || asset.data || [])) {
-      const key = `${attr.trait_type || attr.key}:${attr.value || attr.val}`;
-      traitCounts[key] = (traitCounts[key] || 0) + 1;
+    const attrs = asset.attributes || asset.data || {};
+    if (Array.isArray(attrs)) {
+      for (const attr of attrs) {
+        const key = `${attr.trait_type || attr.key}:${attr.value || attr.val}`;
+        traitCounts[key] = (traitCounts[key] || 0) + 1;
+      }
+    } else if (typeof attrs === 'object') {
+      for (const [key, value] of Object.entries(attrs)) {
+        const traitKey = `${key}:${value}`;
+        traitCounts[traitKey] = (traitCounts[traitKey] || 0) + 1;
+      }
     }
   }
 
@@ -46,7 +89,7 @@ async function calculateRarity() {
     if (!byTemplate[tid]) {
       byTemplate[tid] = {
         assets: [],
-        max_supply: asset.template_max_supply || 10000, // fallback
+        max_supply: asset.template_max_supply || 10000,
         original_mints: new Set()
       };
     }
@@ -57,25 +100,28 @@ async function calculateRarity() {
   // 3. For each template: sort by original template_mint and assign surviving_mint_rank
   const templateStats = {};
   for (const [tid, group] of Object.entries(byTemplate)) {
-    // Sort surviving assets by their ORIGINAL template_mint (ascending = lower mint # first)
-    const sorted = group.assets.sort((a, b) => (a.template_mint || 999999) - (b.template_mint || 999999));
+    const sorted = group.assets.sort((a, b) => 
+      (a.template_mint || 999999) - (b.template_mint || 999999)
+    );
     
     sorted.forEach((asset, index) => {
-      asset.surviving_mint_rank = index + 1;                    // 1 = lowest original mint among survivors
+      asset.surviving_mint_rank = index + 1;
       asset.original_template_mint = asset.template_mint || null;
     });
 
     const survivingCount = sorted.length;
-    const burnRate = group.max_supply > 0 ? ((group.max_supply - survivingCount) / group.max_supply * 100).toFixed(1) : 0;
+    const burnRate = group.max_supply > 0 
+      ? parseFloat(((group.max_supply - survivingCount) / group.max_supply * 100).toFixed(1)) 
+      : 0;
 
     templateStats[tid] = {
       template_id: parseInt(tid),
       original_max_supply: group.max_supply,
       surviving_count: survivingCount,
-      burn_rate_percent: parseFloat(burnRate),
-      avg_rarity_score: 0, // filled later
+      burn_rate_percent: burnRate,
+      avg_rarity_score: 0,
       lowest_surviving_mint: sorted[0]?.template_mint || null,
-      highest_surviving_mint: sorted[sorted.length-1]?.template_mint || null
+      highest_surviving_mint: sorted[sorted.length - 1]?.template_mint || null
     };
   }
 
@@ -85,39 +131,71 @@ async function calculateRarity() {
     let hasLegendary = false;
     let hasSpecialVariation = false;
 
-    for (const attr of (asset.attributes || asset.data || [])) {
-      const key = `${attr.trait_type || attr.key}:${attr.value || attr.val}`;
-      const freq = traitCounts[key] || 1;
-      baseScore += totalSurvivors / freq;
+    const attrs = asset.attributes || asset.data || {};
+    if (Array.isArray(attrs)) {
+      for (const attr of attrs) {
+        const key = `${attr.trait_type || attr.key}:${attr.value || attr.val}`;
+        const freq = traitCounts[key] || 1;
+        baseScore += totalSurvivors / freq;
 
-      // Detect rarity name / special variation for weighting
-      const valLower = (attr.value || attr.val || '').toString().toLowerCase();
-      if (valLower.includes('legendary') || valLower.includes('1/1') || valLower.includes('mythic')) {
-        hasLegendary = true;
+        const valLower = (attr.value || attr.val || '').toString().toLowerCase();
+        if (valLower.includes('legendary') || valLower.includes('1/1') || valLower.includes('mythic')) {
+          hasLegendary = true;
+        }
+        if (valLower.includes('variation') || valLower.includes('special') || valLower.includes('unique')) {
+          hasSpecialVariation = true;
+        }
       }
-      if (valLower.includes('variation') || valLower.includes('special') || valLower.includes('unique')) {
-        hasSpecialVariation = true;
+    } else if (typeof attrs === 'object') {
+      for (const [k, v] of Object.entries(attrs)) {
+        const key = `${k}:${v}`;
+        const freq = traitCounts[key] || 1;
+        baseScore += totalSurvivors / freq;
+
+        const valLower = v.toString().toLowerCase();
+        if (valLower.includes('legendary') || valLower.includes('1/1') || valLower.includes('mythic')) {
+          hasLegendary = true;
+        }
+        if (valLower.includes('variation') || valLower.includes('special') || valLower.includes('unique')) {
+          hasSpecialVariation = true;
+        }
       }
     }
 
-    // === WEIGHTED RARITY LOGIC (customizable per Waxman) ===
-    const templateWeight = 10000 / (byTemplate[asset.template_id]?.max_supply || 10000); // smaller template = higher weight
-    const mintBonus = asset.original_template_mint <= 10 ? 250 : 
-                      asset.original_template_mint === 69 ? 180 :
-                      asset.original_template_mint <= 100 ? 80 : 0;
+    // === WEIGHTED RARITY LOGIC (driven by config.json - fully tunable by community) ===
+    const templateMaxSupply = byTemplate[asset.template_id]?.max_supply || 10000;
+    const templateWeight = (WEIGHTS.templateSupplyWeight || 0.3) * (10000 / templateMaxSupply);
     
-    let weightedScore = baseScore * (0.7 + 0.3 * templateWeight); // base 70% + template weight 30%
-    weightedScore += mintBonus;
+    const mint = asset.original_template_mint || 999999;
+    let mintBonus = 0;
+    const mb = WEIGHTS.mintNumberBonus || {};
+    if (mint <= 10) mintBonus = mb.top10 || 5.0;
+    else if (mint === 69) mintBonus = mb.special69 || 3.0;
+    else if (mint <= 100) mintBonus = mb.top100 || 2.0;
+    else if (mint < 1000) mintBonus = mb.under1000 || 1.0;
 
-    if (hasLegendary) weightedScore *= 1.25;           // Rarity name bonus
-    if (hasSpecialVariation) weightedScore *= 1.15;     // Variation trait bonus
+    // Base statistical rarity scaled by template rarity weight
+    let weightedScore = baseScore * (1 - (WEIGHTS.templateSupplyWeight || 0.3) + templateWeight);
+    weightedScore += mintBonus * 50; // scale bonus to be meaningful alongside statistical scores
+
+    // Apply rarity name & variation multipliers from config
+    const rarityMult = WEIGHTS.rarityNameMultipliers || {};
+    if (hasLegendary) {
+      const key = Object.keys(rarityMult).find(k => hasLegendary && (k.toLowerCase().includes('legendary') || k === '1/1' || k.toLowerCase().includes('mythic'))) || 'Legendary';
+      weightedScore *= (rarityMult[key] || 1.25);
+    }
+    if (hasSpecialVariation) {
+      weightedScore *= (WEIGHTS.variationMultiplier || 1.8);
+    }
 
     asset.weighted_rarity_score = parseFloat(weightedScore.toFixed(2));
     asset.base_rarity_score = parseFloat(baseScore.toFixed(2));
   }
 
-  // 5. Re-sort activeAssets by weighted rarity for global leaderboard
-  const rarityRanked = [...activeAssets].sort((a, b) => b.weighted_rarity_score - a.weighted_rarity_score);
+  // 5. Build rarity leaderboard (sorted by weighted score)
+  const rarityRanked = [...activeAssets].sort((a, b) => 
+    b.weighted_rarity_score - a.weighted_rarity_score
+  );
 
   // Fill avg rarity in templateStats
   for (const tid in templateStats) {
@@ -128,11 +206,13 @@ async function calculateRarity() {
     }
   }
 
-  // 6. Holder leaderboard (by count + weighted rarity sum)
+  // 6. Holder leaderboard (top 50 by weighted rarity sum)
   const holders = {};
   for (const asset of activeAssets) {
     const owner = asset.owner;
-    if (!holders[owner]) holders[owner] = { assets_count: 0, rarity_sum: 0, assets: [] };
+    if (!holders[owner]) {
+      holders[owner] = { assets_count: 0, rarity_sum: 0, assets: [] };
+    }
     holders[owner].assets_count += 1;
     holders[owner].rarity_sum += asset.weighted_rarity_score || 0;
     holders[owner].assets.push(asset.asset_id);
@@ -143,56 +223,44 @@ async function calculateRarity() {
       wallet,
       assets_count: stats.assets_count,
       rarity_sum: parseFloat(stats.rarity_sum.toFixed(2)),
-      top_assets: stats.assets.slice(0, 3)
+      assets: stats.assets.slice(0, 10) // top 10 asset ids for brevity
     }))
-    .sort((a, b) => b.rarity_sum - a.rarity_sum || b.assets_count - a.assets_count)
+    .sort((a, b) => b.rarity_sum - a.rarity_sum)
     .slice(0, 50);
 
-  // 7. Build trait exposure (live % among survivors) - split rarity vs variation if possible
-  const traitExposure = { rarity_traits: {}, variation_traits: {} };
-  for (const [key, count] of Object.entries(traitCounts)) {
-    const pct = parseFloat((count / totalSurvivors * 100).toFixed(2));
-    if (key.toLowerCase().includes('rarity') || key.toLowerCase().includes('tier') || key.toLowerCase().includes('legendary')) {
-      traitExposure.rarity_traits[key] = { count, percent_of_survivors: pct };
-    } else {
-      traitExposure.variation_traits[key] = { count, percent_of_survivors: pct };
-    }
-  }
-
-  // 8. Final outputs
-  const leaderboard = {
-    last_updated: new Date().toISOString(),
-    collection: {
-      name: 'gkniftyheads',
-      total_minted: assets.length,
-      active_supply: totalSurvivors,
-      burned: assets.length - totalSurvivors
-    },
-    holder_leaderboard: holderLeaderboard,
-    rarity_leaderboard: rarityRanked.slice(0, 100).map((asset, index) => ({
-      rank: index + 1,
-      asset_id: asset.asset_id,
-      template_id: asset.template_id,
-      original_template_mint: asset.original_template_mint,
-      surviving_mint_rank: asset.surviving_mint_rank,
-      weighted_rarity_score: asset.weighted_rarity_score,
-      base_rarity_score: asset.base_rarity_score,
-      owner: asset.owner,
-      traits: (asset.attributes || asset.data || []).reduce((acc, t) => {
-        acc[t.trait_type || t.key] = t.value || t.val;
-        return acc;
-      }, {})
-    }))
-  };
-
-  await writeJSON(path.join(DATA_DIR, 'leaderboard.json'), leaderboard);
+  // 7. Write outputs
   await writeJSON(path.join(DATA_DIR, 'template_stats.json'), templateStats);
-  await writeJSON(path.join(DATA_DIR, 'trait_exposure.json'), traitExposure);
+  await writeJSON(path.join(DATA_DIR, 'trait_exposure.json'), {
+    rarity_traits: Object.entries(traitCounts).filter(([k]) => k.toLowerCase().includes('rarity') || k.toLowerCase().includes('legendary') || k.toLowerCase().includes('epic')).slice(0, 20),
+    variation_traits: Object.entries(traitCounts).filter(([k]) => k.toLowerCase().includes('variation') || k.toLowerCase().includes('special') || k.toLowerCase().includes('unique')).slice(0, 20),
+    total_survivors: totalSurvivors,
+    note: 'Percentages calculated live from current surviving assets only'
+  });
+  await writeJSON(path.join(DATA_DIR, 'leaderboard.json'), {
+    holder_leaderboard: holderLeaderboard,
+    rarity_leaderboard: rarityRanked.slice(0, CONFIG.maxRarityLeaderboard || 100).map(a => ({
+      asset_id: a.asset_id,
+      template_id: a.template_id,
+      original_mint: a.original_template_mint,
+      surviving_mint_rank: a.surviving_mint_rank,
+      weighted_rarity_score: a.weighted_rarity_score,
+      base_rarity_score: a.base_rarity_score,
+      owner: a.owner,
+      traits: a.attributes
+    })),
+    generated_at: new Date().toISOString(),
+    total_survivors: totalSurvivors
+  });
 
-  console.log(`✅ Weighted rarity + surviving ranks + trait exposure complete.`);
-  console.log(`   Active survivors: ${totalSurvivors}`);
-  console.log(`   Templates tracked: ${Object.keys(templateStats).length}`);
-  console.log(`   Top weighted asset: #${rarityRanked[0]?.asset_id} (score ${rarityRanked[0]?.weighted_rarity_score})`);
+  console.log('\n✅ Rarity calculation complete.');
+  console.log(`   - ${Object.keys(templateStats).length} templates processed`);
+  if (holderLeaderboard.length > 0) {
+    console.log(`   - Top holder: ${holderLeaderboard[0].wallet} (${holderLeaderboard[0].rarity_sum} weighted rarity)`);
+  }
+  if (rarityRanked.length > 0) {
+    console.log(`   - Rarest asset: #${rarityRanked[0].asset_id} (score ${rarityRanked[0].weighted_rarity_score})`);
+  }
+  console.log('   Outputs: template_stats.json, trait_exposure.json, leaderboard.json (+ .gz if enabled)\n');
 }
 
 calculateRarity().catch(console.error);

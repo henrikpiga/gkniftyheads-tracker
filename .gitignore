@@ -1,0 +1,33 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build / temp
+dist/
+build/
+*.log
+
+# Optional: large generated data (uncomment if you want to keep only samples in git)
+# data/schemas/*.json
+# data/leaderboard.json
+# data/template_stats.json
+# data/trait_exposure.json
+
+# Keep sample data committed for out-of-the-box demo experience
