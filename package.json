@@ -1,0 +1,14 @@
+{
+  "name": "gkniftyheads-tracker",
+  "version": "0.1.0",
+  "description": "GitOps data pipeline and dashboard for GK Nifty Heads WAX collection",
+  "type": "module",
+  "scripts": {
+    "hydrate": "node scripts/hydrate.js",
+    "sync": "node scripts/delta-sync.js && node scripts/calculate-rarity.js",
+    "demo": "echo 'Open demo/index.html in your browser'"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}

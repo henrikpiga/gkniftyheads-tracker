@@ -1,0 +1,23 @@
+{
+  "12345": {
+    "template_id": 12345,
+    "schema_name": "gkniftyheads",
+    "max_supply": 10000,
+    "issued_supply": 8742,
+    "immutable_data": {
+      "name": "Classic Nifty Head #1",
+      "img": "https://ipfs.io/ipfs/Qm...",
+      "description": "Base GK Nifty Head"
+    }
+  },
+  "12346": {
+    "template_id": 12346,
+    "schema_name": "gkniftyheads",
+    "max_supply": 5000,
+    "issued_supply": 3200,
+    "immutable_data": {
+      "name": "Neon Cyber Head",
+      "img": "https://ipfs.io/ipfs/Qm..."
+    }
+  }
+}

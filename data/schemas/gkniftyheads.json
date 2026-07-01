@@ -1,0 +1,26 @@
+[
+  {
+    "asset_id": "1000000001",
+    "template_id": 12345,
+    "schema_name": "gkniftyheads",
+    "owner": "waxman.wam",
+    "burned": false,
+    "attributes": [
+      {"trait_type": "Head Style", "value": "Classic"},
+      {"trait_type": "Background", "value": "Neon Grid"},
+      {"trait_type": "Accessory", "value": "None"}
+    ]
+  },
+  {
+    "asset_id": "1000000002",
+    "template_id": 12346,
+    "schema_name": "gkniftyheads",
+    "owner": "collector1.wam",
+    "burned": false,
+    "attributes": [
+      {"trait_type": "Head Style", "value": "Cyber"},
+      {"trait_type": "Background", "value": "Void"},
+      {"trait_type": "Accessory", "value": "Headphones"}
+    ]
+  }
+]

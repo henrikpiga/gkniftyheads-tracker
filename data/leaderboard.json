@@ -1,0 +1,55 @@
+{
+  "last_updated": "2026-07-01T15:44:00Z",
+  "collection": {
+    "name": "gkniftyheads",
+    "total_minted": 125420,
+    "active_supply": 121578,
+    "burned": 3842
+  },
+  "holder_leaderboard": [
+    {
+      "wallet": "waxman.wam",
+      "assets_count": 1240,
+      "rarity_sum": 45231.75,
+      "top_assets": ["1000000001", "1000000456", "1000000891"]
+    },
+    {
+      "wallet": "topcollector.wam",
+      "assets_count": 987,
+      "rarity_sum": 38920.4,
+      "top_assets": ["1000000002", "1000000312"]
+    },
+    {
+      "wallet": "niftyhodler.wam",
+      "assets_count": 654,
+      "rarity_sum": 28450.1,
+      "top_assets": ["1000000789"]
+    }
+  ],
+  "rarity_leaderboard": [
+    {
+      "rank": 1,
+      "asset_id": "1000000002",
+      "template_id": 12346,
+      "rarity_score": 1247.82,
+      "owner": "collector1.wam",
+      "traits": {
+        "Head Style": "Cyber",
+        "Background": "Void",
+        "Accessory": "Headphones"
+      }
+    },
+    {
+      "rank": 2,
+      "asset_id": "1000000001",
+      "template_id": 12345,
+      "rarity_score": 892.45,
+      "owner": "waxman.wam",
+      "traits": {
+        "Head Style": "Classic",
+        "Background": "Neon Grid",
+        "Accessory": "None"
+      }
+    }
+  ]
+}
